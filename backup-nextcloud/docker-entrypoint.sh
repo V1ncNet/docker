@@ -11,14 +11,15 @@ if [ -z "${BACKUP_ROTATIONS}" ]; then
   export BACKUP_ROTATIONS=4
 fi
 
+if [ "$1" = "cron" ] && [ -z "${CRON_PERIOD}" ]; then
+  log "\$CRON_PERIOD must be set. Exiting"
+  exit 1
+fi
+
 log "Setup environment..."
 echo
 log "   NEXTCLOUD_VOLUME = ${NEXTCLOUD_VOLUME}"
 log "   BACKUP_ROTATIONS = ${BACKUP_ROTATIONS}"
-log "      POSTGRES_HOST = ${POSTGRES_HOST}"
-log "        POSTGRES_DB = ${POSTGRES_DB}"
-log "      POSTGRES_USER = ${POSTGRES_USER}"
-log "  POSTGRES_PASSWORD = ********"
 
 if [ "$1" = "cron" ]; then
   log "        CRON_PERIOD = ${CRON_PERIOD}"
@@ -28,14 +29,16 @@ if [ "$1" = "cron" ]; then
   log "Installing cron: ${CRON_PERIOD}"
 
   # create backup-cron file...
-  echo "${CRON_PERIOD} /usr/local/bin/backup" >> /var/spool/cron/crontabs/root
+  echo "${CRON_PERIOD} /usr/local/bin/backup > /proc/1/fd/1" > /etc/cron.d/backup
+  chmod 600 /etc/cron.d/backup
+  crontab /etc/cron.d/backup
 
   log "Initialize backup service completed."
   log "Starting cron...."
   echo
 
   # Run cron.....
-  crond -l 2 -f
+  crond -n
 fi
 
 if [ "$1" = "backup" ]; then

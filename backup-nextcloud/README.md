@@ -16,10 +16,6 @@ This service doesn't provide any restore function yet.
 ## Environment
 
 - CRON_PERIOD - Cron expression
-- POSTGRES_HOST - PostgreSQL database server
-- POSTGRES_DB - Database name
-- POSTGRES_USER - Database user
-- POSTGRES_PASSWORD - Database password
 - NEXTCLOUD_VOLUME - Nextcloud files directory (usually `/var/www/html`)
 - BACKUP_ROTATIONS - Number of backups to be kept locally (default 4)
 
@@ -63,10 +59,7 @@ services:
     environment:
       CRON_PERIOD: "0 0 * * 1"
       NEXTCLOUD_VOLUME: "/var/www/html"
-      POSTGRES_HOST: "database"
-      POSTGRES_DB: "<db_name>"
-      POSTGRES_USER: "<db_user>"
-      POSTGRES_PASSWORD: "<db_password>"
+      BACKUP_ROTATIONS: 4
 
 volumes:
   nextcloud:

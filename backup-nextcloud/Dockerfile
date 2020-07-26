@@ -1,8 +1,11 @@
-FROM alpine
+FROM archlinux
 
 LABEL maintainer="me@vinado.de"
 
-RUN apk add --no-cache postgresql-client rsync
+RUN pacman -Syu --noconfirm && pacman -S --noconfirm \
+    cronie \
+    postgresql-libs \
+ && rm -Rf /var/cache/pacman/pkg/
 
 COPY backup               /usr/local/bin/
 COPY docker-entrypoint.sh /usr/local/bin/

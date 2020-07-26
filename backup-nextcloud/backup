@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 log() {
   echo "[Backup] ${1}"
@@ -17,63 +17,73 @@ error() {
 
 error_exit() {
   echo >&2 "[Backup] ${1}"
+  disable_maintenence
   exit 1
+}
+
+backup_source=$(echo ${NEXTCLOUD_VOLUME} | sed 's:/*$::')
+nc_config="${backup_source}/config/config.php"
+
+enable_maintenence() {
+  log "Enabling Nextcloud maintenence mode"
+  sed -i -E "s/(^\s*'maintenance'\s*=>\s*)(true|false)/\1true/" ${nc_config}
+}
+
+disable_maintenence() {
+  log "Disabling Nextcloud maintenence mode"
+  sed -i -E "s/(^\s*'maintenance'\s*=>\s*)(true|false)/\1false/" ${nc_config}
+}
+
+trap ctrl_c INT
+
+ctrl_c() {
+  disable_maintenence
 }
 
 # --- SETUP ---
 
-backup_date=$(date -u +"%Y-%m-%d")
+backup_date=$(date -u +"%Y-%m-%d-%H-%M-%S")
+backup_destination="/backups/nextcloud_${backup_date}"
 
-backup_source=$(echo ${NEXTCLOUD_VOLUME} | sed 's:/*$::')
-backup_source="${backup_source}/"
+pg_host="$(sed -rnE "s/^\s*'dbhost'\s*=>\s*'(.*?)',/\1/p" ${nc_config})"
+pg_name="$(sed -rnE "s/^\s*'dbname'\s*=>\s*'(.*?)',/\1/p" ${nc_config})"
+pg_user="$(sed -rnE "s/^\s*'dbuser'\s*=>\s*'(.*?)',/\1/p" ${nc_config})"
+pg_password="$(sed -rnE "s/^\s*'dbpassword'\s*=>\s*'(.*?)',/\1/p" ${nc_config})"
 
-backup_destination=/backups/backups/
-dump_destination=/backups/dumps/
+# Create destination directories
+mkdir -p ${backup_destination}
+chmod 755 ${backup_destination}
 
-# Create destination directories if not present
-[ -d ${backup_destination} ] || mkdir -p ${backup_destination}
-[ -d ${dump_destination} ] || mkdir -p ${dump_destination}
+[[ $(grep -Fq maintenance ${nc_config}) -eq 0 ]] || sed -i -E "s/(\);)/  'maintenance' => false,\n\1/" ${nc_config}
+enable_maintenence
 
-# --- DUMP ---
+# --- DUMP DATABASE ---
 
-log "Dumping Nextcloud database to ${dump_destination}${backup_date}.nextcloud.sql.gz"
-PGPASSWORD="${POSTGRES_PASSWORD}" pg_dump -c -h ${POSTGRES_HOST} -U ${POSTGRES_USER} ${POSTGRES_DB} | gzip -9 > "${dump_destination}${backup_date}.nextcloud.sql.gz"
-if [ ${?} -eq 0 ]; then
+log "Dumping Nextcloud database to ${backup_destination}/backup_postgres.bak.gz"
+PGPASSWORD=${pg_password} pg_dump ${pg_name} -h ${pg_host} -U ${pg_user} | zstd --rsyncable --format=gzip -9 -q > ${backup_destination}/backup_postgres.bak.gz
+if [[ ${?} -eq 0 ]]; then
   log_done
 else
   error "Dump failed"
 fi
 
-# --- RSYNC ---
+# --- ARCHIVE AND COMPRESS NEXTCLOUD FILES ---
 
-log "Rsync ${backup_source} to ${backup_destination}${backup_date}. This may take a while..."
-rsync \
-  --human-readable \
-  --archive \
-  --delete \
-  --delete-excluded \
-  "${backup_source}" "${backup_destination}${backup_date}/" \
-  --link-dest="${backup_destination}current/"
-[ ${?} -ne 0 ] && error_exit "Rsync failed"
-log_done
-
-# --- SYMBOLIC LINK ---
-
-log "Linking latest Backup to ${backup_destination}current"
-ln -nsf "${backup_destination}${backup_date}" "${backup_destination}current"
-[ ${?} -ne 0 ] && error_exit "Soft-linking failed"
+log "Packing ${backup_source}/ to ${backup_destination}/backup_nextcloud.tar.gz. This may take a while..."
+/bin/tar --warning='no-file-ignored' -I "zstd --rsyncable --format=gzip -9 -q" -Pcpf ${backup_destination}/backup_nextcloud.tar.gz ${backup_source}/
+[[ ${?} -ne 0 ]] && error_exit "Tar failed"
 log_done
 
 # --- ROTATE ---
 
-if [ "$(ls -1rd ${backup_destination}* | tail -n +$((${BACKUP_ROTATIONS} + 2)) | wc -l)" -gt 0 ]; then
+ if [[ "$(ls -1r ${backup_destination} | tail -n +$((${BACKUP_ROTATIONS} + 2)) | wc -l)" -gt 0 ]]; then
   log "Removing deprecated backup files..."
-  ls -1rdF ${backup_destination}* | tail -n +$((${BACKUP_ROTATIONS} + 2)) | xargs rm -R
-  [ ${?} -ne 0 ] && error "Failed to remove deprecated Backups"
+  ls -1rF ${backup_destination} | tail -n +$((${BACKUP_ROTATIONS} + 2)) | xargs rm -Rf "{}"
   log_done
 fi
 
 # --- SUMMARY ---
 
-log "Successfully created Nextcloud backup ${backup_destination}${backup_date} ($(du -sh ${backup_destination}${backup_date} | cut -f1)B)"
+disable_maintenence
+log "Successfully created Nextcloud backup ${backup_destination} ($(du -sh ${backup_destination} | cut -f1)B)"
 exit 0
