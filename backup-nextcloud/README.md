@@ -7,7 +7,8 @@ When a new backup is made, files from the older backups are hard-linked. This ke
 ## Features
 
 - PostgreSQL database dumps using `pg_dump`
-- Incremental Nextcloud file backup using `rsync`
+- Nextcloud file snapshots using `tar`
+- Backup compression using `zstd`
 - Configurable Cronjob
 - Configurable rotations
 
@@ -19,14 +20,14 @@ This service doesn't provide any restore function yet.
 - NEXTCLOUD_VOLUME - Nextcloud files directory (usually `/var/www/html`)
 - BACKUP_ROTATIONS - Number of backups to be kept locally (default 4)
 
-All backups are located in `/backups/backups`. Dumps are saved under `/backup/dumps`. They are excluded from the rotation.
+All backups are located in `/backups/nextcloud_<date>`.
 
 ### Scripts
 
 All scripts are located in `/usr/local/bin` and can be called manually. E.g.
 
 ```sh
-docker exec -it nextcloud_backup docker-entrypoint.sh backup
+docker exec nextcloud_backup docker-entrypoint.sh backup
 ```
 
 ## Deployment
