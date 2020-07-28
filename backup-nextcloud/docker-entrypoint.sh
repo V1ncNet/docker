@@ -29,7 +29,7 @@ if [ "$1" = "cron" ]; then
   log "Installing cron: ${CRON_PERIOD}"
 
   # create backup-cron file...
-  echo "${CRON_PERIOD} /usr/local/bin/backup > /proc/1/fd/1" > /etc/cron.d/backup
+  echo "${CRON_PERIOD} /usr/bin/flock -n /tmp/backup.lockfile /usr/local/bin/backup > /proc/1/fd/1" > /etc/cron.d/backup
   chmod 600 /etc/cron.d/backup
   crontab /etc/cron.d/backup
 
@@ -38,14 +38,14 @@ if [ "$1" = "cron" ]; then
   echo
 
   # Run cron.....
-  crond -n
+  exec crond -n
 fi
 
 if [ "$1" = "backup" ]; then
   echo
   log "Starting backup...."
   echo
-  BACKUP_ROTATIONS=${BACKUP_ROTATIONS} /bin/sh /usr/local/bin/backup
+  exec env BACKUP_ROTATIONS=${BACKUP_ROTATIONS} /bin/sh /usr/local/bin/backup
 fi
 
 exit 0

@@ -34,10 +34,13 @@ disable_maintenence() {
   sed -i -E "s/(^\s*'maintenance'\s*=>\s*)(true|false)/\1false/" ${nc_config}
 }
 
-trap ctrl_c INT
+trap ctrl_c INT TERM
 
 ctrl_c() {
+  echo -en "\n[Backup] Caught stop signal. Clean up and exit\n"
   disable_maintenence
+  rm -Rf ${backup_destination}
+  exit $?
 }
 
 # --- SETUP ---
