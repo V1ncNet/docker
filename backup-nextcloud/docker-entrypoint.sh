@@ -45,7 +45,7 @@ if [ "$1" = "backup" ]; then
   echo
   log "Starting backup...."
   echo
-  exec env BACKUP_ROTATIONS=${BACKUP_ROTATIONS} /bin/sh /usr/local/bin/backup
+  exec env BACKUP_ROTATIONS=${BACKUP_ROTATIONS} /usr/bin/flock -n /tmp/backup.lockfile /usr/local/bin/backup
 fi
 
 exit 0
