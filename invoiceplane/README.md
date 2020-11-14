@@ -11,7 +11,7 @@ This image uses the php:7.4-apache-buster base image and the InvoicePlane [repos
 - DB_PORT - Database port
 - IP_URL - URL without trailing slash (mandatory)
 
-Each variable in the list may be configured as Docker Secret by appanding `_FILE`. E.g. `DB_PASSWORD_FILE`.
+As an alternative to passing sensitive information via environment variables, _FILE may be appended to some previously listed environment variables. This is only supported for `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`.
 
 For a full list of InvoicePlane-related variables visit https://github.com/InvoicePlane/InvoicePlane/blob/master/ipconfig.php.example.
 

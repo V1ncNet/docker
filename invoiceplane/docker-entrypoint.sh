@@ -33,15 +33,13 @@ file_env() {
 
 if [ ! -f "/var/www/html/ipconfig.php" ]; then
     echo "[Entrypoint] Installing InvoicePlane"
-    echo
 
     run_as "cp /var/www/html/ipconfig.php.example /var/www/html/ipconfig.php"
 
-    file_env DB_HOSTNAME
     file_env DB_USERNAME
     file_env DB_PASSWORD
     file_env DB_DATABASE
-    file_env DB_PORT
+    export DB_PORT=${DB_PORT:-3306}
 
     for key in $(awk 'BEGIN{for(v in ENVIRON) print v}'); do
         val="$(printenv ${key})"
