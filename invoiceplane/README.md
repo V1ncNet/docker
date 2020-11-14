@@ -9,6 +9,7 @@ This image uses the php:7.4-apache-buster base image and the InvoicePlane [repos
 - DB_PASSWORD - Database password
 - DB_DATABASE - Database name
 - DB_PORT - Database port
+- IP_URL - URL without trailing slash (mandatory)
 
 Each variable in the list may be configured as Docker Secret by appanding `_FILE`. E.g. `DB_PASSWORD_FILE`.
 
