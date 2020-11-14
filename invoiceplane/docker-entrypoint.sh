@@ -1,5 +1,4 @@
 #!/bin/bash
-set -eu
 
 run_as() {
     if [ "$(id -u)" = 0 ]; then
@@ -51,7 +50,7 @@ if [ ! -f "/var/www/html/ipconfig.php" ]; then
         run_as "sed -ir \"s/^[#]*\s*${key}=.*/${key}=${val}/\" /var/www/html/ipconfig.php"
     done
 
-    if [ "${REMOVE_INDEXPHP}" = "true" ]; then
+    if [ -z "${REMOVE_INDEXPHP}" ] && [ "${REMOVE_INDEXPHP}" = "true" ]; then
         run_as "cp /var/www/html/htaccess /var/www/html/.htaccess"
     fi
 fi
