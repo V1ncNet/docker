@@ -1,0 +1,31 @@
+version: '3'
+
+volumes:
+  data:
+
+services:
+  database:
+    image: mysql:5
+    environment:
+      - MYSQL_DATABASE=invoiceplane
+      - MYSQL_USER=invoiceplane
+      - MYSQL_PASSWORD=invoiceplane
+      - MYSQL_RANDOM_ROOT_PASSWORD=invoiceplane
+
+  application:
+    build: 
+      context: .
+    image: vinado/invoiceplane
+    ports:
+      - "80:80"
+    volumes:
+      - data:/var/www/html
+    environment:
+      - IP_URL=http://localhost
+      - REMOVE_INDEXPHP=true
+      - TZ=Europe/Berlin
+      - DB_HOSTNAME=database
+      - DB_USERNAME=invoiceplane
+      - DB_PASSWORD=invoiceplane
+      - DB_DATABASE=invoiceplane
+      - DB_PORT=3306

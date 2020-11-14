@@ -6,6 +6,7 @@ A collection of my Dockerfiles: https://hub.docker.com/u/vinado
 
 - [nextcloud](https://github.com/V1ncNet/docker/tree/master/nextcloud-nginx) - a complete Docker Compose stack for running Nextcloud along with nginx
 - [codimd](https://github.com/V1ncNet/docker/tree/master/codimd) - a CodiMD Dockerfile and complete Docker Compose stack for running CodiMD
+- [invoiceplane](https://github.com/V1ncNet/docker/tree/master/invoiceplane) - an InvoicePlane Dockerfile and complete Docker Compose stack for running InvoicePlane
 
 ## Backup Services
 
