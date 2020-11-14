@@ -1,4 +1,4 @@
-# Invoiceplane Image & Stack
+# InvoicePlane Image & Stack
 
 This image uses the php:7.4-apache-buster base image and the InvoicePlane [repository](https://github.com/InvoicePlane/InvoicePlane).
 
