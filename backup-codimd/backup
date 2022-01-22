@@ -22,7 +22,7 @@ error_exit() {
 
 # --- SETUP ---
 
-backup_date=$(date -u +"%Y-%m-%d")
+backup_date=$(date +%Y%m%dT%H%M.%3N%Z)
 
 backup_source=$(echo ${CODIMD_UPLOADS} | sed 's:/*$::')
 backup_source="${backup_source}/"

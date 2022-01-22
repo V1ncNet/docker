@@ -45,7 +45,7 @@ ctrl_c() {
 
 # --- SETUP ---
 
-backup_date=$(date -u +"%Y-%m-%d-%H-%M-%S")
+backup_date=$(date +%Y%m%dT%H%M.%3N%Z)
 backup_destination="/backups/nextcloud_${backup_date}"
 
 pg_host="$(sed -rnE "s/^\s*'dbhost'\s*=>\s*'(.*?)',/\1/p" ${nc_config})"
