@@ -2,6 +2,10 @@
 
 A collection of my Dockerfiles: https://hub.docker.com/u/vinado
 
+## Images
+
+- [nextcloud-preview-cron](nextcloud-preview-cron) - a simple Docker Image to schedule preview generation using the [Preview Generator](https://apps.nextcloud.com/apps/previewgenerator) Nextcloud app
+
 ## Stacks
 
 - [nextcloud](https://github.com/V1ncNet/docker/tree/master/nextcloud-nginx) - a complete Docker Compose stack for running Nextcloud along with nginx
