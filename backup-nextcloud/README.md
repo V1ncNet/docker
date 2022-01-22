@@ -35,7 +35,7 @@ docker exec nextcloud_backup docker-entrypoint.sh backup
 The service is supposed to be part of a Docker service stack.
 
 ```yaml
-version: '2'
+version: '3'
 
 services:
   database:

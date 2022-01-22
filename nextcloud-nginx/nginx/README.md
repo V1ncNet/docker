@@ -9,7 +9,7 @@ I added the *NEXTCLOUD_HOST* environment variable to `nginx.conf.template`.
 ## How to Deploy the Service
 
 ```yaml
-version: '2'
+version: '3'
 
 services:
   nextcloud:

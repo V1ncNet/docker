@@ -20,7 +20,7 @@ Be aware that you cannot change such variables during container startup, **only*
 Make sure you mount the Nextcloud base directory at the same location as your Nextcloud service does.
 
 ```yml
-version: '2'
+version: '3'
 
 services:
   database:
