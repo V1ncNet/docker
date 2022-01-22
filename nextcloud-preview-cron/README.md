@@ -8,7 +8,7 @@ This Docker image registers a cronjob to trigger preview generation for Nextclou
 
 **Default**
 
-* NEXTCLOUD_VERSION="latest"
+* NEXTCLOUD_VERSION=latest
 * CRON_EXPRESSION="*/10 * * * *"
 
 If you want a different Nextcloud base image version you can do so by providing the build argument `NEXTCLOUD_VERSION`. The cron expression is also customizable. Provide your own by setting it though the `CRON_EXPRESSION` build argument.
