@@ -60,5 +60,5 @@ docker build -t vinado/nextcloud-preview-cron:latest .
 docker build \
  --build-arg NEXTCLOUD_VERSION=22 \
  --build-arg CRON_EXPRESSION="*/15 * * * *" \
- -t vinado/nextcloud-preview-cron:latest .
+ -t vinado/nextcloud-preview-cron:22 .
 ```
