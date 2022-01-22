@@ -1,6 +1,6 @@
 FROM archlinux
 
-LABEL maintainer="me@vinado.de"
+LABEL maintainer="vincent.nadoll@gmail.com"
 
 RUN pacman -Syu --noconfirm && pacman -S --noconfirm \
     cronie \

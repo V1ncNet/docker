@@ -1,6 +1,6 @@
 FROM nginx:alpine
 
-LABEL maintainer="me@vinado.de"
+LABEL maintainer="vincent.nadoll@gmail.com"
 
 COPY nginx.conf.template  /etc/nginx/nginx.conf.template
 COPY docker-entrypoint.sh /usr/local/bin/

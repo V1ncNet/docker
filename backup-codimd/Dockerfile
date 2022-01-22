@@ -1,6 +1,6 @@
 FROM alpine
 
-LABEL maintainer="me@vinado.de"
+LABEL maintainer="vincent.nadoll@gmail.com"
 
 RUN apk add --no-cache postgresql-client rsync
 
