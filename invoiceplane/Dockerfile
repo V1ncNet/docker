@@ -48,7 +48,8 @@ VOLUME /var/www/html
 ## Configure Apache HTTPD mods
 RUN a2enmod rewrite
 
-ENV INVOICEPLANE_VERSION 1.5.11
+ARG INVOICEPLANE_VERSION="1.5.11"
+ENV INVOICEPLANE_VERSION=${INVOICEPLANE_VERSION}
 
 ## Download and install InvoicePlane
 RUN set -ex; \
