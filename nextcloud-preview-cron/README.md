@@ -36,7 +36,7 @@ services:
     [...]
 
   preview:
-    image: vinado/nextcloud-preview-cron:23
+    image: vinado/nextcloud-preview-cron:24
     depends_on:
       - nextcloud
     volumes:
@@ -58,7 +58,7 @@ docker build -t vinado/nextcloud-preview-cron:latest .
 
 # Or for a different base image version or cron expression
 docker build \
- --build-arg NEXTCLOUD_VERSION=23 \
+ --build-arg NEXTCLOUD_VERSION=24 \
  --build-arg CRON_EXPRESSION="*/15 * * * *" \
- -t vinado/nextcloud-preview-cron:23 .
+ -t vinado/nextcloud-preview-cron:24 .
 ```
