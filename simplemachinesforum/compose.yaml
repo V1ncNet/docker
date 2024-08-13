@@ -1,0 +1,21 @@
+volumes:
+  application_data:
+
+services:
+  database:
+    image: mariadb:10
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: "yes"
+      MARIADB_DATABASE: smf
+      MARIADB_USER: smf
+      MARIADB_PASSWORD: smf
+
+  application:
+    image: vinado/simplemachinesforum:2.1.4
+    depends_on:
+      database:
+        condition: service_started
+    ports:
+      - "8080:80"
+    volumes:
+      - application_data:/var/www/html
